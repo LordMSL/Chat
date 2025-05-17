@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Alt Fashion Chat</title>
+         <style>
+            body { font:14px san-serif; }
+            #message { list-style: none; padding: 0;}
+            li { margin-bottom: 10px; }
+            input { padding: 10px; width: 80%; }
+            button { padding: 10px; }
+      </style>
+    </head>
+<body>
+    <h1>Alt Fashion Chatroom</h1>
+  <ul id="messages"></ul>
+  <form id="form" action="">
+    <input id="input" autocomplete="off" placeholder="Type a message..." />
+    <button type="submit">Send</button>
+  </form>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io(); // Connects to server
+
+    const form = document.getElementById('form');
+    const input = document.getElementById('input');
+    const messages = document.getElementById('messages');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault(); // Stops page refresh
+      if (input.value.trim()) {
+        const item = document.createElement('li');
+        item.textContent = 'You: ' + input.value;
+        messages.appendChild(item);
+        socket.emit('chat message', input.value);
+        input.value = '';
+      }
+    });
+
+    socket.on('chat message', function(msg) {
+      const item = document.createElement('li');
+      item.textContent = 'Stranger: ' + msg;
+      messages.appendChild(item);
+    });
+  </script>
+</body>
+</html>
